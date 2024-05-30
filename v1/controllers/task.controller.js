@@ -75,9 +75,6 @@ module.exports.changeStatus = async (req, res) => {
         const id = req.params.id;
         const status = req.body.status;
 
-        console.log(id);
-        console.log(status);
-
         const listStatus = ["initial", "doing", "pending", "finish", "notFinish"];
 
         if(listStatus.includes(status)){
@@ -108,13 +105,13 @@ module.exports.changeStatus = async (req, res) => {
 // [PATCH] /api/v1/tasks/change-multi/
 module.exports.changeMulti = async (req, res) => {
     try {
-        const [ids, status] = req.body;
+        const { ids, status } = req.body;
         console.log(ids);
         console.log(status);
         const listStatus = ["initial", "doing", "pending", "finish", "notFinish"];
         if(listStatus.includes(status)){
             await Task.updateMany({
-                _id: { $in: id }
+                _id: { $in: ids }
             }, {
                 status: status
             });
@@ -160,5 +157,38 @@ module.exports.edit = async (req, res) => {
     res.json({
         code: 200,
         message: "Cập nhật thành công!"
+    });
+}
+
+// [DELETE] /api/v1/tasks/delete/:id/
+module.exports.delete = async (req, res) => {
+    const id = req.params.id;
+    await Task.updateOne({
+        _id: id
+    }, {
+        deleted: true,
+        deletedAt: new Date()
+    });
+
+    res.json({
+        code: 200,
+        message: "Xóa công việc thành công!"
+    });
+}
+
+// [DELETE] /api/v1/tasks/delete-multi/
+module.exports.deleteMulti = async (req, res) => {
+    const {ids} = req.body;
+
+    await Task.updateMany({
+        _id: {$in: ids}
+    }, {
+        deleted: true,
+        deletedAt: new Date()
+    });
+
+    res.json({
+        code: 200,
+        message: "Xóa các công việc thành công!"
     });
 }
