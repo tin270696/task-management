@@ -14,14 +14,18 @@ router.patch("/change-multi", controller.changeMulti);
 
 router.post(
     "/create",
-    // taskValidate.create,
+    taskValidate.create,
     controller.create
 );
 
-router.patch("/edit/id", controller.edit);
+router.patch(
+    "/edit/:id",
+    taskValidate.edit,
+    controller.edit
+);
 
 router.patch("/delete/:id", controller.delete);
 
-router.patch("delete-multi", controller.deleteMulti);
+router.patch("/delete-multi", controller.deleteMulti);
 
 module.exports = router;
