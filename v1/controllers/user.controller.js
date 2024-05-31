@@ -75,7 +75,7 @@ module.exports.login = async (req, res) => {
     });
 }
 
-// [POST] /api/v1/users/forgot-password/
+// [POST] /api/v1/users/password/forgot/
 module.exports.forgotPassword = async (req, res) => {
     const email = req.body.email;
 
@@ -112,5 +112,35 @@ module.exports.forgotPassword = async (req, res) => {
     res.json({
         code: 200,
         message: "Đã gửi OTP qua email!"
+    });
+}
+
+// [POST] /api/v1/users/password/otp/
+module.exports.passwordOtp  = async (req, res) => {
+    const email = req.body.email;
+    const otp = req.body.otp;
+
+    const result = await ForgotPassword.findOne({
+        email: email,
+        otp: otp
+    })
+
+    if(!result) {
+        res.json({
+            code: 400,
+            message: "OTP không hợp lệ!"
+        })
+    }
+
+    const user = await User.findOne({
+        email: email
+    })
+
+    const token = user.token;
+
+    res.json({
+        code: 200,
+        message: "Xác thực thành công!",
+        token: token
     });
 }
