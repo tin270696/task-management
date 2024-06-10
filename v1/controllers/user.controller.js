@@ -162,3 +162,26 @@ module.exports.passwordReset = async (req, res) => {
         message: "Đổi mật khẩu thành công!"
     });
 }
+
+// [GET] /api/v1/users/detail/:id
+module.exports.detail = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findOne({
+            _id: id,
+            deleted: false
+        }).select("fullName email");
+        
+        res.json({
+            code: 200,
+            message: "Thành công",
+            user: user
+        });
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Tài khoản không tồn tại!"
+        })
+    }
+}
